@@ -1,0 +1,6 @@
+.env
+old/*
+scripts/*
+Makefile
+__paycache__
+myenv
