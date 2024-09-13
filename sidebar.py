@@ -6,6 +6,7 @@ def novo_chat():
     chat_id = str(uuid.uuid1())
     st.session_state.chat_id = chat_id
     st.session_state.messages = []
+    st.session_state.ebi=[]
     
 
 def sidebar_list(chat):
@@ -15,7 +16,14 @@ def sidebar_list(chat):
             novo_chat()
         with st.container(border=True, height=300):
             for item in list:
-                if st.button('Chat '+item['SessionId'],use_container_width=True):
-                    st.session_state.chat_id = item['SessionId']
-                    st.session_state.messages = chat.history(st.session_state.chat_id)
+                if item['title']:
+                    if st.button(item['title'],use_container_width=True):
+                        st.session_state.chat_id = item['SessionId']
+                        st.session_state.messages = chat.history(st.session_state.chat_id)
+                        st.session_state.ebi = chat.ebi(st.session_state.chat_id)
+                else:
+                    if st.button('Chat '+item['SessionId'],use_container_width=True):
+                        st.session_state.chat_id = item['SessionId']
+                        st.session_state.messages = chat.history(st.session_state.chat_id)
+                        st.session_state.ebi = chat.ebi(st.session_state.chat_id)
                     

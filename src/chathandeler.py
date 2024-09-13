@@ -1,4 +1,5 @@
 import requests
+import json
 
 class ChatService:
     def __init__(self) -> None:
@@ -19,12 +20,13 @@ class ChatService:
         }
         # Realiza a requisição POST à API
         response = requests.post(self.api_url+f'/{chat_session}', json=body, headers=self.header)
-        return  response.json()["EBI"],response.json()["Ai_response"]
+        ebi = response.json()["EBI"]
+        return ebi,response.json()["Ai_response"]
     
     def history(self,chat_session):
         #{"role": "user", "content": prompt}
         response = requests.get(self.api_url+f'/{chat_session}/history')
-        history = response.json()['history']
+        history = response.json()['history'] 
         history_formated = []
         for item in history:
             if item['type'] == "human":
@@ -32,6 +34,15 @@ class ChatService:
             if item['type'] == "ai":
                 history_formated.append({'role':"assistant","content":item['content']})
         return history_formated
+    
+    def ebi(self,chat_session):
+        #{"role": "user", "content": prompt}
+        response = requests.get(self.api_url+f'/{chat_session}/history')
+        ebi = response.json()['EBI']   
+        if isinstance(ebi,dict):
+            return ebi
+        else:
+            return None
     
     def chat_list(self):
         response = requests.get(self.api_url+'/list')

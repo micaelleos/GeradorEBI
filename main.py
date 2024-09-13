@@ -1,22 +1,20 @@
 
 import streamlit as st
-import time
-from chathandeler import ChatService
+from src.EBIagent import EBIagent
 from sidebar import sidebar_list
 from styles import *
 
 styles()
-chat = ChatService()
+chat = EBIagent()
 
 sidebar_list(chat)
 
-if "chat_id" not in st.session_state:
-    st.session_state.chat_id = chat.chat_list()[-1] 
-
-context = "você é um especialista"
 
 if "messages" not in st.session_state:
     st.session_state.messages = chat.history(st.session_state.chat_id)
+
+if "ebi" not in st.session_state:
+    st.session_state.ebi = chat.ebi(st.session_state.chat_id)
 
 with st.container():
     
@@ -52,16 +50,29 @@ with st.container():
             prompt = st.chat_input("Faça uma pergunta?",key="user_input")
 
             if prompt:
-                
+                with st.chat_message("user"):
+                    st.markdown(prompt)
+
+                    
                 st.session_state.messages.append({"role": "user", "content": prompt})
                 
-                ebi,response=chat.chat(prompt,st.session_state.chat_id,context)
+                response=chat.chat(prompt)
                 
+                with st.chat_message("assistant"):
+                    st.markdown(response)
+
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
                 st.rerun()
 
     with col22:
         with st.container(border=True):
-            st.write('Estudo biblico')
-            #st.write(ebi)
+            if st.session_state.ebi:
+                st.markdown("## "+st.session_state.ebi['title'])
+                st.markdown(st.session_state.ebi['base'])
+                st.markdown("**Perguntas**")
+                st.markdown(st.session_state.ebi['description'])
+                st.markdown("**Para refletir:**")
+                st.markdown("*"+st.session_state.ebi['footer']+"*")
+            else:
+                st.write(" ")

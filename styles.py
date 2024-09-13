@@ -17,9 +17,9 @@ def styles():
                 }
 
                 .st-emotion-cache-bm2z3a{
-                overflow: hidden;
+               overflow: hidden;
                 }
-
+                
                 .st-emotion-cache-4uzi61{
                 height: 35vw;
                 overflow: auto;
@@ -27,3 +27,5 @@ def styles():
                 </style>
                 """
                 , unsafe_allow_html=True)
+    
+                
